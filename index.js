@@ -21,11 +21,43 @@ function parseBase64VLQSegment (string) {
 }
 
 function _parseSegment (string, pos) {
-  const intValue = CHARACTER_TO_INTEGER[string.charAt(pos)]
-  pos++
-  return [pos, intValue]
+  const startPos = pos
+  let shift = 0
+  let signBit = false
+  let segment = 0
+
+  while (pos < string.length) {
+    let newSegment = CHARACTER_TO_INTEGER[string.charAt(pos)]
+
+    if (pos === startPos) signBit = (newSegment & 0b000001) === 1
+    const continuation = (newSegment & 0b100000) === 32
+
+    newSegment = (newSegment & 0b011111)
+    if (pos === startPos) newSegment = newSegment >> 1
+    newSegment = newSegment << shift
+    segment += newSegment
+
+    // update indices.
+    shift += (pos === startPos ? 4 : 5)
+    pos++
+    if (!continuation) break
+  }
+
+  return [pos, signBit ? segment * -1 : segment]
+}
+
+function extractSourceMapComment (code) {
+  const parsed = code.match(/(\/\/|\/\*)# sourceMappingURL=(?<url>.+)/)
+
+  if (parsed === null) {
+    return null
+  }
+
+  // c-style source map comments leave trailing ' */'
+  return parsed.groups.url.replace(' */', '')
 }
 
 module.exports = {
-  parseBase64VLQSegment
+  parseBase64VLQSegment, 
+  extractSourceMapComment
 }

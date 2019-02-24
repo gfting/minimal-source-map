@@ -4,8 +4,10 @@
   "description": "minimal implementation of source map revision 3 proposal",
   "main": "index.js",
   "scripts": {
-    "test": "c8 mocha test.js",
-    "posttest": "standard"
+    "test": "c8 mocha test/test.js",
+    "posttest": "standard",
+    "release": "standard-version",
+    "lint:fix": "standard --fix"
   },
   "repository": {
     "type": "git",
@@ -22,8 +24,15 @@
   },
   "homepage": "https://github.com/bcoe/minimal-source-map#readme",
   "devDependencies": {
+    "c8": "^3.4.0",
     "chai": "^4.2.0",
     "mocha": "^6.0.1",
-    "standard": "^12.0.1"
+    "standard": "^12.0.1",
+    "standard-version": "^5.0.0"
+  },
+  "standard": {
+    "ignore": [
+      "**/test/fixtures"
+    ]
   }
 }
