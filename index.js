@@ -53,6 +53,7 @@ function extractSourceMapComment (code) {
     return null
   }
 
+  // c-style source map comments leave trailing ' */'
   return parsed.groups.url.replace(' */', '')
 }
 
