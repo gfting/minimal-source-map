@@ -46,6 +46,17 @@ function _parseSegment (string, pos) {
   return [pos, signBit ? segment * -1 : segment]
 }
 
+function extractSourceMapComment (code) {
+  const parsed = code.match(/(\/\/|\/\*)# sourceMappingURL=(?<url>.+)/)
+
+  if (parsed === null) {
+    return null
+  }
+
+  return parsed.groups.url.replace(' */', '')
+}
+
 module.exports = {
-  parseBase64VLQSegment
+  parseBase64VLQSegment, 
+  extractSourceMapComment
 }
